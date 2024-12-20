@@ -2,4 +2,13 @@
 <section name="Workbench">
 	<item key="hasShownOverlayPopupBefore" value="true"/>
 	<item key="replaceBarOpen" value="false"/>
+	<list key="searchhistory">
+		<item value="reqired"/>
+		<item value="required"/>
+		<item value="url"/>
+	</list>
+	<section name="org.eclipse.ui.texteditor.GotoLineAction$GotoLineDialog_dialogBounds">
+		<item key="DIALOG_X_ORIGIN" value="85"/>
+		<item key="DIALOG_Y_ORIGIN" value="262"/>
+	</section>
 </section>

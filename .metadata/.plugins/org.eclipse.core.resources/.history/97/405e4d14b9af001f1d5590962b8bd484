@@ -1,9 +1,0 @@
-package com.ecom.controller;
-
-import org.springframework.stereotype.Controller;
-
-@Controller
-@RequestMpping
-public class AdminController {
-
-}

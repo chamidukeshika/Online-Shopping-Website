@@ -1,0 +1,15 @@
+package com.ecom.model;
+
+public class UserDtls {
+
+	private int id;
+	
+	private String name;
+	
+	private String mobile;
+	
+	private String email;
+	
+
+	
+}

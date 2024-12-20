@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{base::Layout(~{::section})}">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Insert title here</title>
+    <link
+            href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css"
+            rel="stylesheet">
+</head>
+<body>
+<section>
+    <div class="container p-5 mt-5">
+        <div class="row align-items-center mb-3">
+            <div class="col-6 text-start">
+                <a href="/admin/" class="btn btn-outline-primary">
+                    <i class="fas fa-arrow-left"></i> Admin Dashboard
+                </a>
+            </div>
+        </div>
+        <div class="row justify-content-center">
+            <div class="col-md-8 col-lg-8">
+                <div class="card card-sh">
+                    <div class="card-header text-center">
+                        <p class="fs-4 fw-medium">Edit Product</p>
+
+                        <th:block th:if="${session.succMsg}">
+                            <p class="text-success fw-bold">[[${session.succMsg}]]</p>
+                            <th:block th:text="${@commonServiceImpl.removeSessionMessage()}"></th:block>
+                        </th:block>
+                        <th:block th:if="${session.errorMsg}">
+                            <p class="text-danger fw-bold">[[${session.errorMsg}]]</p>
+                            <th:block th:text="${@commonServiceImpl.removeSessionMessage()}"></th:block>
+                        </th:block>
+                    </div>
+                    <div class="card-body">
+                        <form action="/admin/saveProduct" method="post" enctype="multipart/form-data">
+                            <div class="mb-3">
+                                <label for="title" class="form-label">Enter Title</label>
+                                <input type="text" th:value="${product.title}" name="title" id="title"
+                                       class="form-control w-100" placeholder="title" required>
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="description" class="form-label">Enter Description</label>
+                                <textarea id="description" rows="3" class="form-control w-100"
+                                          name="description" placeholder="description">[[${product.description}]]</textarea>
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="category" class="form-label">Category</label>
+                                <select id="category" class="form-control w-100" name="category"
+                                        placeholder="name" required>
+                                    <option>[[${product.category}]]</option>
+                                    <option th:each="c:${categories}">[[${c.name}]]</option>
+                                </select>
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="price" class="form-label">Enter Price</label>
+                                <div class="input-group mb-3">
+										<span class="input-group-text" id="price">Rs</span> <input
+											type="number" name="price" th:value="${product.price}" placeholder ="price in LKR" class="form-control" 
+											aria-label="Username" aria-describedby="basic-addon1">
+									</div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label for="stock" class="form-label">Enter Stock</label>
+                                    <input type="number" name="stock" id="stock" th:value="${product.stock}"
+                                           class="form-control" min="1" required>
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label for="productImage" class="form-label">Upload Image</label>
+                                    <input type="file" name="file" id="productImage" class="form-control">
+                                </div>
+                            </div>
+
+                            <div class="text-center">
+                                <img th:src="@{'/img/product_img/' + ${product.image}}"
+                                     class="img-fluid rounded"
+                                     style="max-height: 100px; max-width: 100px;" alt="Product Image">
+                            </div>
+
+                            <button type="submit" class="btn btn-outline-primary fw-bold col-12 mt-3">Update
+                                Product
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

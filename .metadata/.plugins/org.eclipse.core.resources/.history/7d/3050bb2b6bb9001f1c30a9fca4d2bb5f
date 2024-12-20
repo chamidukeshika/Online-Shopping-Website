@@ -1,0 +1,14 @@
+package com.ecom.service.impl;
+
+import com.ecom.model.UserDtls;
+import com.ecom.service.UserService;
+
+public class UserServiceImpl implements UserService {
+
+	@Override
+	public UserDtls saveUser(UserDtls user) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+}
