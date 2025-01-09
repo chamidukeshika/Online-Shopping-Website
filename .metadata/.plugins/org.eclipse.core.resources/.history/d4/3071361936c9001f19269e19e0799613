@@ -1,0 +1,9 @@
+package com.ecom.config;
+
+import com.ecom.model.UserDtls;
+
+public class CustomUser implements UserDe {
+
+	private UserDtls user;
+
+}

@@ -1,0 +1,11 @@
+package com.ecom.config;
+
+import org.springframework.security.core.userdetails.UserDetails;
+
+import com.ecom.model.UserDtls;
+
+public class CustomUser implements UserDetails {
+
+	private UserDtls user;
+
+}

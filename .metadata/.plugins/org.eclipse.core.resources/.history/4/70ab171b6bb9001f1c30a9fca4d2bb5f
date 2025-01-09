@@ -1,7 +1,0 @@
-package com.ecom.service;
-
-public interface UserService {
-
-	private UserDtls saveUser(UserDtls user);
-	
-}

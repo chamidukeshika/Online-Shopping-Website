@@ -3,6 +3,7 @@
 	<item key="hasShownOverlayPopupBefore" value="true"/>
 	<item key="replaceBarOpen" value="false"/>
 	<list key="searchhistory">
+		<item value="name"/>
 		<item value="reqired"/>
 		<item value="required"/>
 		<item value="url"/>

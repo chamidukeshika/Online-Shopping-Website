@@ -1,0 +1,10 @@
+package com.ecom.controller;
+
+@Controller
+public class UserController {
+
+	@GetMapping("/")
+	public String home() {
+		
+	}
+}

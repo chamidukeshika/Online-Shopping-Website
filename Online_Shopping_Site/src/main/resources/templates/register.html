@@ -18,11 +18,20 @@
 				<!-- Responsive form column -->
 				<div class="col-md-6 col-12 mt-5 p-2">
 					<div class="card shadow p-2 mb-5 bg-body-tertiary rounded">
-						<div class="card-header">
+						<div class="card-header text-center">
 							<p class="fs-3 text-center fw-medium">Register Form</p>
+							<th:block th:if="${session.succMsg}">
+								<p class="text-success fw-bold">[[${session.succMsg}]]</p>
+								<th:block th:text="${@commonServiceImpl.removeSessionMessage()}"></th:block>
+							</th:block>
+							<th:block th:if="${session.errorMsg}">
+								<p class="text-danger fw-bold">[[${session.errorMsg}]]</p>
+								<th:block th:text="${@commonServiceImpl.removeSessionMessage()}"></th:block>
+
+							</th:block>
 						</div>
 						<div class="card-body">
-							<form>
+							<form action="/saveUser" enctype="multipart/form-data" method="POST">
 								<div class="row">
 									<!-- Full Name -->
 									<div class="col">
@@ -95,14 +104,14 @@
 									<!-- Confirm Password -->
 									<div class="col">
 										<label class="form-label fw-medium">Confirm Password</label>
-										<input class="form-control" name="cPassword" type="password" required>
+										<input class="form-control" name="cpassword" type="password" required>
 									</div>
 								</div>
 
 								<!-- Profile Image -->
 								<div class="mt-2">
 									<label class="form-label fw-medium">Profile Image</label>
-									<input class="form-control" name="profile_image" type="file" required>
+									<input class="form-control" name="img" type="file" required>
 								</div>
 								<br />
 
@@ -120,7 +129,7 @@
 						</div>
 
 						<div class="card-footer text-center">
-							Already have an account? <a href="/login" class="text-decoration-none fw-medium">Login Here</a>
+							Already have an account? <a href="/signin" class="text-decoration-none fw-medium">Login Here</a>
 						</div>
 					</div>
 				</div>

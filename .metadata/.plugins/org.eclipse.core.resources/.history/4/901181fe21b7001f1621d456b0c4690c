@@ -1,6 +1,0 @@
-package com.ecom.model;
-
-public class Product {
-
-	private int id;
-}
