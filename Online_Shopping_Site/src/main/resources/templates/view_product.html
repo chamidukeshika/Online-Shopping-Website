@@ -31,14 +31,31 @@
 			style="margin-top: 100px; margin-bottom: 100px; border-radius: 10px;">
 
 			<div class="row g-4">
+
+				<th:block th:if="${session.succMsg}">
+					<p class="text-success text-center alert alert-success" role="alert">[[${session.succMsg}]]</p>
+					<th:block th:text="${@commonServiceImpl.removeSessionMessage()}"></th:block>
+				
+				</th:block>
+				<th:block th:if="${session.errorMsg}">
+					<p class="text-danger text-center alert alert-danger">[[${session.errorMsg}]]</p>
+					<th:block th:text="${@commonServiceImpl.removeSessionMessage()}"></th:block>
+
+				</th:block>
+
+
 				<!-- Product Image -->
 				<div class="col-md-6 text-center">
 					<img th:src="@{'/img/product_img/' + ${product.image}}"
-						alt="Product Image" class="img-fluid rounded" style="max-height: 400px;"> 
+						alt="Product Image" class="img-fluid rounded"
+						style="max-height: 400px;">
 				</div>
 
 				<!-- Product Details -->
 				<div class="col-md-6">
+
+
+
 					<p class="fs-3 fw-bold">[[${product.title}]]</p>
 					<p>
 						<span class="fw-bold">Description:</span><br>[[${product.description}]]
@@ -81,11 +98,23 @@
 
 					<!-- Call to Action -->
 					<th:block th:if="${product.stock > 0}">
-						<a href="/login" class="btn btn-danger w-100">Add To Cart &nbsp;<i class="fa-solid fa-cart-shopping"></i></a>
+						<th:block th:if="${user==null}">
+							<a href="/signin" class="btn btn-danger w-100">Add To Cart
+								&nbsp;<i class="fa-solid fa-cart-shopping"></i>
+							</a>
+						</th:block>
+
+						<th:block th:unless="${user==null}">
+							<a th:href="@{'/user/addCart?pid='+${product.id}+'&uid='+${user.id}}"
+								class="btn btn-danger w-100">Add To Cart &nbsp;<i
+								class="fa-solid fa-cart-shopping"></i>
+							</a>
+						</th:block>
+
 					</th:block>
 					<th:block th:if="${product.stock == 0}">
 						<button class="btn btn-secondary w-100"
-							style="cursor: not-allowed;" disabled> 😔 Sorry, Out of
+							style="cursor: not-allowed;" disabled>😔 Sorry, Out of
 							Stock</button>
 					</th:block>
 

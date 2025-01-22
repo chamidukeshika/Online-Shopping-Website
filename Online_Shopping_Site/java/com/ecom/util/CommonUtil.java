@@ -7,6 +7,8 @@ import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Component;
 
+import com.ecom.model.ProductOrder;
+
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
 import jakarta.servlet.http.HttpServletRequest;
@@ -62,4 +64,62 @@ public class CommonUtil {
 
 	}
 
+	String msg = null;
+
+	public Boolean sendMailForProductOrder(ProductOrder order, String status) throws Exception {
+
+		msg = "<div style=\"font-family: Arial, sans-serif; line-height: 1.6; color: #333; padding: 20px; background-color: #f4f4f9;\">"
+				+ "<div style=\"max-width: 600px; margin: auto; background: #ffffff; box-shadow: 0 4px 8px rgba(0,0,0,0.1); border-radius: 10px; overflow: hidden;\">"
+				+ "<div style=\"padding: 20px; background-color: #5b9bd5; color: white; text-align: center;\">"
+				+ "    <h2 style=\"margin: 0; font-size: 24px;\">Order Status Update</h2>" + "</div>"
+				+ "<div style=\"padding: 20px;\">"
+				+ "    <p style=\"font-size: 18px;\">Dear <strong>[[name]]</strong>,</p>"
+				+ "    <p>We are delighted to share the status of your recent order:</p><p>ID : [[orderId]]</p>"
+				+ "    <div style=\"background: #e7f5e9; padding: 20px; border-radius: 8px; margin-top: 20px;\">"
+				+ "        <div style=\"margin-bottom: 10px; color: #4caf50; font-size: 16px;\">"
+				+ "            <strong>Status:</strong> [[orderStatus]]" + "        </div>"
+				+ "        <div style=\"margin-bottom: 10px;\">"
+				+ "            <strong>Product Name:</strong> [[productName]]" + "        </div>"
+				+ "        <div style=\"margin-bottom: 10px; background-color: #f9f9f9; padding: 10px; border-radius: 6px;\">"
+				+ "            <strong>Category:</strong> [[category]]" + "        </div>"
+				+ "        <div style=\"margin-bottom: 10px;\">" + "            <strong>Quantity:</strong> [[quantity]]"
+				+ "        </div>"
+				+ "        <div style=\"margin-bottom: 10px; background-color: #f9f9f9; padding: 10px; border-radius: 6px;\">"
+				+ "            <strong>Total Order Cost:</strong> [[price]]" + "        </div>"
+				+ "        <div style=\"margin-bottom: 10px;\">"
+				+ "            <strong>Payment Type:</strong> [[paymentType]]" + "        </div>" + "    </div>"
+				+ "    <p style=\"margin-top: 20px;\">If you have any questions, feel free to contact our support team. We're here to help!</p>"
+				+ "    <p>Thank you for choosing us. We appreciate your business!</p>"
+				+ "    <div style=\"text-align: center; margin-top: 20px;\">"
+				+ "        <a href=\"https://support.shoppingapp.com\" style=\"display: inline-block; background: #5b9bd5; color: white; text-decoration: none; padding: 10px 20px; border-radius: 5px;\">Contact Support</a>"
+				+ "    </div>" + "</div>"
+				+ "<div style=\"padding: 10px; text-align: center; background: #f1f1f1; color: #888; font-size: 14px;\">"
+				+ "    Shopping App Support Team &copy; 2025" + "</div>" + "</div>" + "</div>";
+
+		MimeMessage message = mailSender.createMimeMessage();
+		MimeMessageHelper helper = new MimeMessageHelper(message, true); // Set true for multipart email
+
+		helper.setFrom("chamidukeshikaz@gmail.com", "Shopping App Support Team");
+		helper.setTo(order.getOrderAddress().getEmail());
+
+		Double Total = (order.getPrice()) * (order.getQuantity());
+
+		// Replace placeholders with actual values
+		msg = msg.replace("[[name]]", order.getOrderAddress().getFirstName());
+		msg = msg.replace("[[orderId]]", order.getOrderId());
+		msg = msg.replace("[[orderStatus]]", status);
+		msg = msg.replace("[[productName]]", order.getProduct().getTitle());
+		msg = msg.replace("[[category]]", order.getProduct().getCategory());
+		msg = msg.replace("[[quantity]]", order.getQuantity().toString());
+		msg = msg.replace("[[price]]", Total.toString());
+		msg = msg.replace("[[paymentType]]", order.getPaymentType());
+
+		helper.setSubject("Product Order Status");
+		helper.setText(msg, true); // true for HTML content
+		mailSender.send(message);
+
+		return true;
+	}
 }
+
+// 34min

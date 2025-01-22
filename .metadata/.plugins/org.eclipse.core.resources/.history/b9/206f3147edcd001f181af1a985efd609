@@ -1,7 +1,0 @@
-package com.ecom.util;
-
-public class AppConstant {
-
-	public static final long TIME_DURATION
-
-}

@@ -1,7 +1,0 @@
-package com.ecom.config;
-
-import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
-
-public class AuthSuccessHandlerImpl implements AuthenticationSuccessHandler {
-
-}

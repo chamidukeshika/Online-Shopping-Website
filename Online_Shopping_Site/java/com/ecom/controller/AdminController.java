@@ -24,10 +24,15 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.ecom.model.Category;
 import com.ecom.model.Product;
+import com.ecom.model.ProductOrder;
 import com.ecom.model.UserDtls;
+import com.ecom.service.CartService;
 import com.ecom.service.CategoryService;
+import com.ecom.service.OrderService;
 import com.ecom.service.ProductService;
 import com.ecom.service.UserService;
+import com.ecom.util.CommonUtil;
+import com.ecom.util.OrderStatus;
 
 import jakarta.servlet.http.HttpSession;
 
@@ -44,6 +49,15 @@ public class AdminController {
 	@Autowired
 	private UserService userService;
 
+	@Autowired
+	private CommonUtil commonUtil;
+
+	@Autowired
+	private CartService cartService;
+
+	@Autowired
+	private OrderService orderService;
+
 	@ModelAttribute
 	public void getUserDetails(Principal p, Model m) {
 
@@ -52,6 +66,8 @@ public class AdminController {
 			String email = p.getName();
 			UserDtls userDtls = userService.getUserByEmail(email);
 			m.addAttribute("user", userDtls);
+			Integer countCart = cartService.getCountCart(userDtls.getId());
+			m.addAttribute("countCart", countCart);
 		}
 
 		List<Category> allActiveCategory = categoryService.getAllActiveCategory();
@@ -193,9 +209,23 @@ public class AdminController {
 	}
 
 	@GetMapping("/products")
-	public String loadViewProduct(Model m) {
+	public String loadViewProduct(Model m, @RequestParam(defaultValue = "") String ch, HttpSession session) {
 
-		m.addAttribute("products", productService.getAllProducts());
+		List<Product> products = null;
+
+		if (ch != null && ch.length() > 0) {
+			products = productService.searchProduct(ch);
+			if (products == null || products.isEmpty()) {
+				session.setAttribute("errorMsg", "Incorrect search !! No products found.");
+			} else {
+				session.removeAttribute("errorMsg");
+			}
+		} else {
+			products = productService.getAllProducts();
+			session.removeAttribute("errorMsg");
+		}
+
+		m.addAttribute("products", products);
 		return "admin/products";
 	}
 
@@ -263,4 +293,77 @@ public class AdminController {
 		return "redirect:/admin/users";
 
 	}
+
+	@GetMapping("/orders")
+	public String getAllOrders(Model m) {
+		List<ProductOrder> orders = orderService.getAllOrders();
+
+		orders.sort((o1, o2) -> o2.getOrderDate().compareTo(o1.getOrderDate()));
+
+		m.addAttribute("orders", orders);
+		m.addAttribute("srch", false);
+		return "/admin/orders";
+	}
+
+	@PostMapping("/update-order-status")
+	public String updateOrderStatus(@RequestParam Integer id, @RequestParam Integer st, HttpSession session) {
+
+		OrderStatus[] values = OrderStatus.values();
+
+		String status = null;
+
+		for (OrderStatus orderSt : values) {
+
+			if (orderSt.getId().equals(st)) {
+				status = orderSt.getName();
+			}
+
+		}
+
+		ProductOrder updateOrder = orderService.updateOrderStatus(id, status);
+
+		try {
+			commonUtil.sendMailForProductOrder(updateOrder, status);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
+		if (!ObjectUtils.isEmpty(updateOrder)) {
+			session.setAttribute("succMsg", "Order Updated Successfully !");
+
+		} else {
+			session.setAttribute("errorMsg", "status not updated");
+
+		}
+
+		return "redirect:/admin/orders";
+	}
+
+	// search product
+	@GetMapping("/search-order")
+	public String searchProduct(@RequestParam String orderId, Model m, HttpSession session) {
+		ProductOrder order = orderService.getOrderByOrderId(orderId.trim());
+
+		if (ObjectUtils.isEmpty(order)) {
+
+			session.setAttribute("errorMsg", "Incorrect Order Id !!!");
+			m.addAttribute("orderDtls", null);
+		} else {
+			m.addAttribute("orderDtls", order);
+		}
+
+		m.addAttribute("srch", true);
+
+		return "/admin/orders";
+	}
+
+	// search product
+	@GetMapping("/search")
+	public String searchProduct(@RequestParam String ch, Model m) {
+		List<Product> searchProduct = productService.searchProduct(ch);
+		m.addAttribute("products", searchProduct);
+
+		return "admin/products";
+	}
+
 }

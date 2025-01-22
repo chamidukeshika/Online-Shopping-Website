@@ -34,29 +34,33 @@ public class AuthFailureHandlerImpl extends SimpleUrlAuthenticationFailureHandle
 
 		UserDtls userDtls = userRepository.findByEmail(email);
 
-		if (userDtls.getIsEnable()) {
+		if (userDtls != null) {
+			if (userDtls.getIsEnable()) {
 
-			if (userDtls.getAccountNonLocked()) {
+				if (userDtls.getAccountNonLocked()) {
 
-				if (userDtls.getFailedAttempt() < AppConstant.ATTEMPT_TIME) {
+					if (userDtls.getFailedAttempt() < AppConstant.ATTEMPT_TIME) {
 
-					userService.increaseFailedAttempt(userDtls);
+						userService.increaseFailedAttempt(userDtls);
+					} else {
+						userService.userAccountLock(userDtls);
+						exception = new LockedException("Temporarily locked !! 3 unsuccessful login attempts");
+					}
+
 				} else {
-					userService.userAccountLock(userDtls);
-					exception = new LockedException("Temporarily locked !! 3 unsuccessful login attempts");
+
+					if (userService.unlockAccountTimeExpired(userDtls)) {
+						exception = new LockedException("Your account is Unlocked !! Please try to Login");
+					} else {
+						exception = new LockedException("Your account is Locked !! Please try after sometimes");
+					}
 				}
 
 			} else {
-
-				if (userService.unlockAccountTimeExpired(userDtls)) {
-					exception = new LockedException("Your account is Unlocked !! Please try to Login");
-				} else {
-					exception = new LockedException("Your account is Locked !! Please try after sometimes");
-				}
+				exception = new LockedException("Your account has been Deactivated");
 			}
-
 		} else {
-			exception = new LockedException("Your account has been Deactivated");
+			exception = new LockedException("Invalid Email or Password");
 		}
 
 		super.setDefaultFailureUrl("/signin?error");

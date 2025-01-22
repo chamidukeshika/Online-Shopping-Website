@@ -1,0 +1,387 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+	th:replace="~{base::Layout(~{::section})}">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Orders Management</title>
+<!-- Bootstrap CSS -->
+<link
+	href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css"
+	rel="stylesheet">
+<!-- Font Awesome -->
+<script src="https://kit.fontawesome.com/a076d05399.js"></script>
+</head>
+<body
+	style="background: linear-gradient(135deg, #4facfe, #00f2fe); font-family: 'Poppins', sans-serif; color: #fff;">
+	<section class="d-flex align-items-center mt-5"
+		style="min-height: 100vh;">
+		<div class="container">
+			<div class="text-center mt-5"
+				style="padding: 20px; font-size: 1.8rem; font-weight: 400;">
+				<i class="fas fa-box"></i>&nbsp; Orders Management
+			</div>
+
+			<!-- Success and Error Messages -->
+			<th:block th:if="${session.succMsg}">
+				<p class="text-success fw-bold text-center">[[${session.succMsg}]]</p>
+				<th:block th:text="${@commonServiceImpl.removeSessionMessage()}"></th:block>
+			</th:block>
+			<th:block th:if="${session.errorMsg}">
+				<p class="text-danger fw-bold text-center">[[${session.errorMsg}]]</p>
+				<th:block th:text="${@commonServiceImpl.removeSessionMessage()}"></th:block>
+			</th:block>
+
+
+			<div class="container-fluid p-2  ">
+				<div class="row">
+					<div class="col-md-8 offset-md-2">
+						<form action="/admin/search-order" method="get">
+							<div class="input-group shadow-lg"
+								style="max-width: 700px; margin: auto; display: flex; align-items: center; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); border-radius: 10px; overflow: hidden;">
+								<input type="text" class="form-control" name="orderId"
+									placeholder="Search order" required
+									style="flex: 1; border: none; border-radius: 0; padding: 12px 20px; font-size: 16px; outline: none; transition: box-shadow 0.3s, background-color 0.3s;">
+								<button class="btn btn-outline-secondary ms-3 fw-medium"
+									style="border: none; padding: 12px 20px; font-weight: 600; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: background-color 0.3s, transform 0.3s;">
+									<i class="fa-solid fa-magnifying-glass"
+										style="margin-right: 8px;"></i> Search
+								</button>
+							</div>
+						</form>
+					</div>
+				</div>
+			</div>
+
+
+			<!-- Orders Table -->
+			<div class="card shadow-lg mt-3"
+				style="border-radius: 20px; overflow: hidden; border: none; background-color: rgba(255, 255, 255, 0.8);">
+				<div class="card-body" style="padding: 20px;">
+
+					<div class="table-responsive">
+						<table class="table table-borderless align-middle mb-0"
+							style="background: #ffffff; border-radius: 15px;">
+							<tbody>
+
+								<th:block th:if="${srch}">
+
+									<th:block th:if="${orderDtls != null}">
+										<tr 
+											style="text-align: left; background: #f8f9fa; padding: 15px; border-bottom: 1px solid #ddd;">
+											<!-- Product Image -->
+											<td style="width: 100px; vertical-align: top;"><img
+												th:src="@{'/img/product_img/' + ${orderDtls.product.image}}"
+												style="max-height: 80px; max-width: 80px; border-radius: 10px; object-fit: cover;"
+												alt="Product Image"></td>
+											<!-- Product Details -->
+											<td
+												style="padding-left: 15px; width: 200px; vertical-align: top;">
+												<span style="font-size: 1.3rem; font-weight: 500;"
+												th:text="${orderDtls.product.title}"></span>
+												<div style="margin-top: 8px; color: #555;">
+													<span style="font-size: 0.95rem;"
+														th:text="${orderDtls.orderDate}"></span>
+													<br> <span style="font-size: 0.85rem; color: #999;"
+														th:text="${orderDtls.orderId}"></span>
+												</div>
+											</td>
+
+											<!-- Quantity and Price -->
+											<td
+												style="padding-left: 15px; width: 120px; vertical-align: top;">
+												<div style="font-size: 1rem; color: #555;">
+													Quantity: <span th:text="${orderDtls.quantity}"></span>
+												</div>
+												<div style="font-size: 1rem; color: #555;">
+													Price: <span th:text="${orderDtls.price}"></span>
+												</div>
+											</td>
+
+											<!-- Delivery Details -->
+											<td
+												style="padding-left: 15px; width: 120px; vertical-align: top;">
+												<div style="font-size: 1rem; color: #555;">
+													Delivery Details:<br />
+													<p style="margin: 5px 0;" th:text="${orderDtls.orderAddress.email}"></p>
+
+
+													<!-- Button to Open Popup -->
+													<button class="text-primary text-start"
+														style="background: none; border: none; cursor: pointer;"
+														onclick="showPopup()">View details -></button>
+												</div> <!-- Popup Modal -->
+												<div id="popup-modal"
+													style="display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 300px; background: #fff; border: 1px solid #ccc; box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3); z-index: 1000; padding: 20px; border-radius: 8px;">
+													<h3 style="margin-top: 0;">Delivery Details</h3>
+													<p style="margin: 5px 0;"
+														th:text="${orderDtls.orderAddress.firstName+' '+orderDtls.orderAddress.lastName}"></p>
+
+													<p style="margin: 5px 0;"
+														th:text="${orderDtls.orderAddress.mobileNo}"></p>
+													<p style="margin: 5px 0;"
+														th:text="${orderDtls.orderAddress.address}"></p>
+													<p style="margin: 5px 0;" th:text="${orderDtls.orderAddress.state}"></p>
+													<p style="margin: 5px 0;"
+														th:text="${orderDtls.orderAddress.pincode}"></p>
+													<button
+														style="background: #d9534f; color: #fff; border: none; padding: 5px 10px; border-radius: 5px; cursor: pointer; margin-top: 10px;"
+														onclick="closePopup()">Close</button>
+												</div> <!-- Overlay for Popup -->
+												<div id="popup-overlay"
+													style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.5); z-index: 999;"
+													onclick="closePopup()"></div> <!-- JavaScript --> <script>
+														function showPopup() {
+															document
+																	.getElementById('popup-modal').style.display = 'block';
+															document
+																	.getElementById('popup-overlay').style.display = 'block';
+														}
+
+														function closePopup() {
+															document
+																	.getElementById('popup-modal').style.display = 'none';
+															document
+																	.getElementById('popup-overlay').style.display = 'none';
+														}
+													</script>
+											</td>
+
+											<!-- Total Price -->
+											<td
+												style="padding-left: 15px; width: 80px; vertical-align: top;">
+												<div style="font-size: 1rem; color: #555;">
+													Total Price: <br /> <b style="color: #000;"
+														th:text="${orderDtls.quantity * orderDtls.price}"></b>
+												</div>
+											</td>
+
+											<!-- Order Status -->
+											<td
+												style="padding-left: 15px; width: 150px; vertical-align: top;">
+												<div style="display: flex; align-items: center;">
+													<span th:if="${orderDtls.status == 'In Progress'}"
+														style="height: 10px; width: 10px; background-color: #28a745; border-radius: 50%; margin-right: 8px;"></span>
+													<span th:if="${orderDtls.status == 'In Progress'}">In
+														Progress</span> <span th:if="${orderDtls.status == 'Order Recieved'}"
+														style="height: 10px; width: 10px; background-color: #007bff; border-radius: 50%; margin-right: 8px;"></span>
+													<span th:if="${orderDtls.status == 'Order Recieved'}">Order
+														Received</span> <span th:if="${orderDtls.status == 'Product Packed'}"
+														style="height: 10px; width: 10px; background-color: #ffc107; border-radius: 50%; margin-right: 8px;"></span>
+													<span th:if="${orderDtls.status == 'Product Packed'}">Product
+														Packed</span> <span th:if="${orderDtls.status == 'Out for Delivery'}"
+														style="height: 10px; width: 10px; background-color: #fd7e14; border-radius: 50%; margin-right: 8px;"></span>
+													<span th:if="${orderDtls.status == 'Out for Delivery'}">Out
+														for Delivery</span> <span th:if="${orderDtls.status == 'Delivered'}"
+														style="height: 10px; width: 10px; background-color: #6c757d; border-radius: 50%; margin-right: 8px;"></span>
+													<span th:if="${orderDtls.status == 'Delivered'}">Delivered</span> <span
+														th:if="${orderDtls.status == 'Order Cancelled'}"
+														style="height: 10px; width: 10px; background-color: #e74c3c; border-radius: 50%; margin-right: 8px;"></span>
+													<span th:if="${orderDtls.status == 'Order Cancelled'}">Order
+														Cancelled</span>
+												</div> <!-- Update Status Form -->
+
+											</td>
+											<th:block
+												th:unless="${orderDtls.status=='Order Cancelled' ||orderDtls.status=='Delivered'}">
+
+
+
+
+												<td style="width: 180px; vertical-align: top;">
+													<form action="/admin/update-order-status" method="post"
+														style="display: flex; align-items: center;">
+														<input th:value="${orderDtls.id}" name="id" type="hidden">
+														<select class="form-control" name="st">
+															<option th:text="${orderDtls.status}"></option>
+															<option th:if="${orderDtls.status != 'In Progress'}" th:value="1">In
+																Progress</option>
+															<option th:if="${orderDtls.status != 'Order Recieved'}"
+																th:value="2">Order Received</option>
+															<option th:if="${orderDtls.status != 'Product Packed'}"
+																th:value="3">Product Packed</option>
+															<option th:if="${orderDtls.status != 'Out for Delivery'}"
+																th:value="4">Out for delivery</option>
+															<option th:if="${orderDtls.status != 'Delivered'}" th:value="5">Delivered</option>
+															<option th:if="${orderDtls.status != 'Order Cancelled'}"
+																th:value="6">Cancelled</option>
+														</select>
+														<button class="btn btn-primary col"
+															style="margin-left: 10px;">Update</button>
+													</form>
+												</td>
+											</th:block>
+										</tr>
+
+									</th:block>
+
+									<th:block th:unless="${orderDtls != null}">
+										<p class="fs-3 text-center">[[${errorMsg}]]</p>
+										<a  classhref="/admin/orders"></a>
+									</th:block>
+								</th:block>
+
+								<th:block th:unless="${srch}">
+									<tr th:each="o : ${orders}"
+										style="text-align: left; background: #f8f9fa; padding: 15px; border-bottom: 1px solid #ddd;">
+										<!-- Product Image -->
+										<td style="width: 100px; vertical-align: top;"><img
+											th:src="@{'/img/product_img/' + ${o.product.image}}"
+											style="max-height: 80px; max-width: 80px; border-radius: 10px; object-fit: cover;"
+											alt="Product Image"></td>
+										<!-- Product Details -->
+										<td
+											style="padding-left: 15px; width: 200px; vertical-align: top;">
+											<span style="font-size: 1.3rem; font-weight: 500;"
+											th:text="${o.product.title}"></span>
+											<div style="margin-top: 8px; color: #555;">
+												<span style="font-size: 0.95rem;"
+													th:text="${#dates.format(o.orderDate, 'yyyy MMM dd &nbsp; HH:mm a')}"></span>
+												<br> <span style="font-size: 0.85rem; color: #999;"
+													th:text="${o.orderId}"></span>
+											</div>
+										</td>
+
+										<!-- Quantity and Price -->
+										<td
+											style="padding-left: 15px; width: 120px; vertical-align: top;">
+											<div style="font-size: 1rem; color: #555;">
+												Quantity: <span th:text="${o.quantity}"></span>
+											</div>
+											<div style="font-size: 1rem; color: #555;">
+												Price: <span th:text="${o.price}"></span>
+											</div>
+										</td>
+
+										<!-- Delivery Details -->
+										<td
+											style="padding-left: 15px; width: 120px; vertical-align: top;">
+											<div style="font-size: 1rem; color: #555;">
+												Delivery Details:<br />
+												<p style="margin: 5px 0;" th:text="${o.orderAddress.email}"></p>
+
+
+												<!-- Button to Open Popup -->
+												<button class="text-primary text-start"
+													style="background: none; border: none; cursor: pointer;"
+													onclick="showPopup()">View details -></button>
+											</div> <!-- Popup Modal -->
+											<div id="popup-modal"
+												style="display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 300px; background: #fff; border: 1px solid #ccc; box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3); z-index: 1000; padding: 20px; border-radius: 8px;">
+												<h3 style="margin-top: 0;">Delivery Details</h3>
+												<p style="margin: 5px 0;"
+													th:text="${o.orderAddress.firstName+' '+o.orderAddress.lastName}"></p>
+
+												<p style="margin: 5px 0;"
+													th:text="${o.orderAddress.mobileNo}"></p>
+												<p style="margin: 5px 0;"
+													th:text="${o.orderAddress.address}"></p>
+												<p style="margin: 5px 0;" th:text="${o.orderAddress.state}"></p>
+												<p style="margin: 5px 0;"
+													th:text="${o.orderAddress.pincode}"></p>
+												<button
+													style="background: #d9534f; color: #fff; border: none; padding: 5px 10px; border-radius: 5px; cursor: pointer; margin-top: 10px;"
+													onclick="closePopup()">Close</button>
+											</div> <!-- Overlay for Popup -->
+											<div id="popup-overlay"
+												style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.5); z-index: 999;"
+												onclick="closePopup()"></div> <!-- JavaScript --> <script>
+													function showPopup() {
+														document
+																.getElementById('popup-modal').style.display = 'block';
+														document
+																.getElementById('popup-overlay').style.display = 'block';
+													}
+
+													function closePopup() {
+														document
+																.getElementById('popup-modal').style.display = 'none';
+														document
+																.getElementById('popup-overlay').style.display = 'none';
+													}
+												</script>
+										</td>
+
+										<!-- Total Price -->
+										<td
+											style="padding-left: 15px; width: 80px; vertical-align: top;">
+											<div style="font-size: 1rem; color: #555;">
+												Total Price: <br /> <b style="color: #000;"
+													th:text="${o.quantity * o.price}"></b>
+											</div>
+										</td>
+
+										<!-- Order Status -->
+										<td
+											style="padding-left: 15px; width: 150px; vertical-align: top;">
+											<div style="display: flex; align-items: center;">
+												<span th:if="${o.status == 'In Progress'}"
+													style="height: 10px; width: 10px; background-color: #28a745; border-radius: 50%; margin-right: 8px;"></span>
+												<span th:if="${o.status == 'In Progress'}">In
+													Progress</span> <span th:if="${o.status == 'Order Recieved'}"
+													style="height: 10px; width: 10px; background-color: #007bff; border-radius: 50%; margin-right: 8px;"></span>
+												<span th:if="${o.status == 'Order Recieved'}">Order
+													Received</span> <span th:if="${o.status == 'Product Packed'}"
+													style="height: 10px; width: 10px; background-color: #ffc107; border-radius: 50%; margin-right: 8px;"></span>
+												<span th:if="${o.status == 'Product Packed'}">Product
+													Packed</span> <span th:if="${o.status == 'Out for Delivery'}"
+													style="height: 10px; width: 10px; background-color: #fd7e14; border-radius: 50%; margin-right: 8px;"></span>
+												<span th:if="${o.status == 'Out for Delivery'}">Out
+													for Delivery</span> <span th:if="${o.status == 'Delivered'}"
+													style="height: 10px; width: 10px; background-color: #6c757d; border-radius: 50%; margin-right: 8px;"></span>
+												<span th:if="${o.status == 'Delivered'}">Delivered</span> <span
+													th:if="${o.status == 'Order Cancelled'}"
+													style="height: 10px; width: 10px; background-color: #e74c3c; border-radius: 50%; margin-right: 8px;"></span>
+												<span th:if="${o.status == 'Order Cancelled'}">Order
+													Cancelled</span>
+											</div> <!-- Update Status Form -->
+
+										</td>
+										<th:block
+											th:unless="${o.status=='Order Cancelled' ||o.status=='Delivered'}">
+
+
+
+
+											<td style="width: 180px; vertical-align: top;">
+												<form action="/admin/update-order-status" method="post"
+													style="display: flex; align-items: center;">
+													<input th:value="${o.id}" name="id" type="hidden">
+													<select class="form-control" name="st">
+														<option th:text="${o.status}"></option>
+														<option th:if="${o.status != 'In Progress'}" th:value="1">In
+															Progress</option>
+														<option th:if="${o.status != 'Order Recieved'}"
+															th:value="2">Order Received</option>
+														<option th:if="${o.status != 'Product Packed'}"
+															th:value="3">Product Packed</option>
+														<option th:if="${o.status != 'Out for Delivery'}"
+															th:value="4">Out for delivery</option>
+														<option th:if="${o.status != 'Delivered'}" th:value="5">Delivered</option>
+														<option th:if="${o.status != 'Order Cancelled'}"
+															th:value="6">Cancelled</option>
+													</select>
+													<button class="btn btn-primary col"
+														style="margin-left: 10px;">Update</button>
+												</form>
+											</td>
+										</th:block>
+									</tr>
+
+								</th:block>
+							</tbody>
+						</table>
+					</div>
+				</div>
+			</div>
+
+		</div>
+	</section>
+
+	<!-- Bootstrap JS -->
+	<script
+		src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
+	<script
+		src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.min.js"></script>
+</body>
+</html>

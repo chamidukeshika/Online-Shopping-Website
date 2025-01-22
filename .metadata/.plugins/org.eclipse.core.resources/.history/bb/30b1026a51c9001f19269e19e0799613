@@ -1,7 +1,0 @@
-package com.ecom.config;
-
-import org.springframework.security.core.Authentication;
-
-public class AuthSuccessHandlerImpl implements Authentication {
-
-}

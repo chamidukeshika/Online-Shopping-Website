@@ -14,29 +14,59 @@
 
 <body>
 	<section class="container-fluid ">
-		<div class="row align-items-center mb-3 "style="margin-top: 100px;">
+		<div class="row align-items-center mb-3 " style="margin-top: 100px;">
 			<div class="col-12 col-md-6 text-start  mb-md-0">
 				<a href="/admin/" class="btn btn-outline-primary"> <i
 					class="fas fa-arrow-left"></i> Admin Dashboard
 				</a>
 			</div>
 		</div>
-		<div class="row justify-content-center">
+
+
+
+		<div class=" text-center  ">
+			<div class="text-center"
+				style="padding: 20px; font-size: 1.8rem; font-weight: 400;">
+				<i class="fa-solid fa-layer-group"></i>&nbsp; Product Management
+			</div>
+			<th:block th:if="${session.succMsg}">
+				<p class="text-success fw-bold">[[${session.succMsg}]]</p>
+				<th:block th:text="${@commonServiceImpl.removeSessionMessage()}"></th:block>
+			</th:block>
+			<th:block th:if="${session.errorMsg}">
+				<p class="text-danger fw-bold">[[${session.errorMsg}]]</p>
+				<th:block th:text="${@commonServiceImpl.removeSessionMessage()}"></th:block>
+
+			</th:block>
+		</div>
+
+
+
+		<div class="container-fluid p-2  ">
+			<div class="row">
+				<div class="col-md-8 offset-md-2">
+					<form action="/admin/products" method="get">
+						<div class="input-group shadow-lg"
+							style="max-width: 700px; margin: auto; display: flex; align-items: center; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); border-radius: 10px; overflow: hidden;">
+							<input type="text" class="form-control" name="ch"
+								
+								style="flex: 1; border: none; border-radius: 0; padding: 12px 20px; font-size: 16px; outline: none; transition: box-shadow 0.3s, background-color 0.3s;">
+							<button class="btn btn-outline-secondary ms-3 fw-medium"
+								style="border: none; padding: 12px 20px; font-weight: 600; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: background-color 0.3s, transform 0.3s;">
+								<i class="fa-solid fa-magnifying-glass"
+									style="margin-right: 8px;"></i> Search
+							</button>
+						</div>
+					</form>
+				</div>
+			</div>
+		</div>
+		
+		
+		
+		<div class="row justify-content-center mt-2">
 			<div class="col-md-12 col-sm-12">
 				<div class="card card-sh">
-					<div class="p-3 text-center  ">
-						<p class="fw-medium fs-4">View Product Details</p>
-
-						<th:block th:if="${session.succMsg}">
-							<p class="text-success fw-bold">[[${session.succMsg}]]</p>
-							<th:block th:text="${@commonServiceImpl.removeSessionMessage()}"></th:block>
-						</th:block>
-						<th:block th:if="${session.errorMsg}">
-							<p class="text-danger fw-bold">[[${session.errorMsg}]]</p>
-							<th:block th:text="${@commonServiceImpl.removeSessionMessage()}"></th:block>
-
-						</th:block>
-					</div>
 					<div class="card-body">
 						<div class="table-responsive">
 							<table class="table table-hover align-middle">
