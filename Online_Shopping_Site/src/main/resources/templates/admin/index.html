@@ -38,9 +38,13 @@ body {
 <body>
 
 	<section>
-		<div class="container mt-5 mb-5" style="padding: 100px;">
-			<p class="text-center fs-3 fw-bold">Admin Dashboard</p>
-			<div class="row g-4 mt-4">
+		<div class="container" style="padding: 100px;">
+
+			<div class="text-center"
+				style="padding: 20px; font-size: 1.8rem; font-weight: 500;">
+				<i class="fa-solid fa-user-tie"></i>&nbsp; Admin Dashboard
+			</div>
+			<div class="row g-4 mt-2">
 
 				<!-- Add Product -->
 				<div class="col-md-4 col-sm-6">
@@ -92,7 +96,7 @@ body {
 
 				<!-- Users -->
 				<div class="col-md-4 col-sm-6">
-					<a href="/admin/users" class="text-decoration-none">
+					<a href="/admin/users?type=1" class="text-decoration-none">
 						<div class="card card-sh bg-light">
 							<div class="card-body text-center text-success">
 								<i class="fas fa-users fa-3x"></i>
@@ -104,9 +108,22 @@ body {
 
 				<!-- Add Admin -->
 				<div class="col-md-4 col-sm-6">
-					<a href="#" class="text-decoration-none">
+					<a href="/admin/add-admin" class="text-decoration-none">
 						<div class="card card-sh bg-light">
 							<div class="card-body text-center text-secondary">
+								<i class="fa-solid fa-user-plus fa-3x"></i>
+								<h4 class="fs-5 fw-bold mt-2">Add Admin</h4>
+							</div>
+						</div>
+					</a>
+				</div>
+
+				<div class="col-md-4 col-sm-6"></div>
+
+				<div class="col-md-4 col-sm-6">
+					<a href="/admin/users?type=2" class="text-decoration-none">
+						<div class="card card-sh bg-light">
+							<div class="card-body text-center text-success">
 								<i class="fas fa-user-shield fa-3x"></i>
 								<h4 class="fs-5 fw-bold mt-2">Admin Manage</h4>
 							</div>

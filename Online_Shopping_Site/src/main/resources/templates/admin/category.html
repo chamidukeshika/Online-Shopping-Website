@@ -122,6 +122,43 @@
 									</tbody>
 								</table>
 							</div>
+
+							<div class="row mt-3">
+									<div class="col-md-4"
+										style="font-size: 1.2rem; font-weight: bold; color: #333;">
+										<span>Total Categories : </span> <span style="color: #007bff;">[[${totalElements}]]</span>
+									</div>
+
+
+									<div class="col-md-4">
+										<nav aria-label="Page navigation example">
+											<ul class="pagination justify-content-center">
+												<!-- Previous Button -->
+												<li class="page-item"
+													th:classappend="${isFirst} ? 'disabled' : ''"><a
+													class="page-link"
+													th:href="@{'/admin/category?pageNo='+${pageNo-1}}"
+													aria-label="Previous"> <span aria-hidden="true">&laquo;</span>
+												</a></li>
+
+												<!-- Page Numbers -->
+												<li th:each="i : ${#numbers.sequence(1, totalPages)}"
+													class="page-item"
+													th:classappend="${pageNo+1 == i} ? 'active' : ''"><a
+													class="page-link" th:href="@{'/admin/category?pageNo='+${i-1}}">
+														[[${i}]] </a></li>
+
+												<!-- Next Button -->
+												<li class="page-item"
+													th:classappend="${isLast} ? 'disabled' : ''"><a
+													class="page-link"
+													th:href="@{'/admin/category?pageNo='+${pageNo+1}}"
+													aria-label="Next"> <span aria-hidden="true">&raquo;</span>
+												</a></li>
+											</ul>
+										</nav>
+									</div>
+							</div>
 						</div>
 					</div>
 				</div>

@@ -26,7 +26,7 @@
 </head>
 <body>
 	<!-- Start NavBar -->
-	<nav class="navbar navbar-expand-lg bg-light fixed-top" id="navbar">
+	<nav class="navbar navbar-expand-lg  fixed-top" id="navbar"><!-- bg-light -->
 		<div class="container-fluid">
 			<!-- Logo -->
 			<a class="navbar-brand" href="/"> <img src="/img/logo.png"
@@ -69,7 +69,7 @@
 								<img alt="Profile Picture"
 								th:src="@{'/img/profile_img/' + ${user.profileImage}}"
 								class="rounded-circle"
-								style="width: 30px; height: 30px; object-fit: cover; margin-right: 8px;border:1px solid black;">
+								style="width: 30px; height: 30px; object-fit: cover; margin-right: 8px; border: 1px solid black;">
 								<!-- User Name --> <span th:text="${user.name}"></span>
 						</a> <!-- Dropdown Menu -->
 							<ul class="dropdown-menu dropdown-menu-end shadow-sm"
@@ -77,19 +77,26 @@
 								<li th:if="${user != null and user.role == 'ROLE_ADMIN'}">
 									<a class="dropdown-item d-flex align-items-center"
 									href="/admin/"> <i class="fa-solid fa-user-shield me-2"></i>
-										Dashboard</a></li>
-								
+										Dashboard
+								</a>
+								</li>
+
 								<li th:if="${user != null and user.role == 'ROLE_ADMIN'}"><hr
 										class="dropdown-divider"></li>
-										
+
 								<li th:if="${user != null and user.role != 'ROLE_ADMIN'}"><a
 									class="dropdown-item d-flex align-items-center"
 									href="/user/profile"><i class="fa-solid fa-user me-2"></i>
 										Profile</a></li>
-										
-								<li th:if="${user != null and user.role != 'ROLE_ADMIN'}"><hr
+
+								<li th:if="${user != null and user.role == 'ROLE_ADMIN'}"><a
+									class="dropdown-item d-flex align-items-center"
+									href="/admin/profile"><i class="fa-solid fa-user me-2"></i>
+										Profile</a></li>
+
+								<li ><hr
 										class="dropdown-divider"></li>
-										
+
 								<li th:if="${user != null and user.role != 'ROLE_ADMIN'}">
 									<a class="dropdown-item d-flex align-items-center"
 									href="/user/user-orders"> <i class="fa-solid fa-box me-2"></i>

@@ -27,15 +27,25 @@
 <body>
 
 	<section>
+
+
 		<div class="container card-sh mt-12 p-5"
 			style="margin-top: 100px; margin-bottom: 100px; border-radius: 10px;">
+			<div class="row align-items-center">
+				<div class="col-6 text-start">
+					<a href="/products" class="btn btn-outline-primary"> <i
+						class="fas fa-arrow-left"></i> All Products
+					</a>
+				</div>
 
+			</div>
 			<div class="row g-4">
 
 				<th:block th:if="${session.succMsg}">
-					<p class="text-success text-center alert alert-success" role="alert">[[${session.succMsg}]]</p>
+					<p class="text-success text-center alert alert-success"
+						role="alert">[[${session.succMsg}]]</p>
 					<th:block th:text="${@commonServiceImpl.removeSessionMessage()}"></th:block>
-				
+
 				</th:block>
 				<th:block th:if="${session.errorMsg}">
 					<p class="text-danger text-center alert alert-danger">[[${session.errorMsg}]]</p>
@@ -105,7 +115,8 @@
 						</th:block>
 
 						<th:block th:unless="${user==null}">
-							<a th:href="@{'/user/addCart?pid='+${product.id}+'&uid='+${user.id}}"
+							<a
+								th:href="@{'/user/addCart?pid='+${product.id}+'&uid='+${user.id}}"
 								class="btn btn-danger w-100">Add To Cart &nbsp;<i
 								class="fa-solid fa-cart-shopping"></i>
 							</a>

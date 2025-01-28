@@ -17,9 +17,10 @@
 <body>
 	<section>
 		<div class="container-fluid p-5 mt-5">
+		
 			<div class="row">
 				<div class="col-md-8 offset-md-2">
-					<form action="search" method="get">
+					<form action="/products" method="get">
 						<div class="input-group"
 							style="max-width: 700px; margin: auto; display: flex; align-items: center; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); border-radius: 10px; overflow: hidden;">
 							<input type="text" class="form-control" name="ch"
@@ -60,15 +61,14 @@
 				<div class="col-md-10 col-sm-12">
 					<div class="card">
 						<div class="card-body">
-							<p class="fs-2 text-center fw-medium">Products</p>
 							<div class="row">
 
 								<th:block th:if="${productsSize >0}">
 									<!-- Product Cards -->
-									<div class="col-lg-3 col-md-4 col-sm-6 col-12 mb-4"
+									<div class="col-lg-3 col-md-4 col-sm-6 col-12 mb-4  "
 										th:each="p : ${products}">
 										<div
-											class="card bg-body-tertiary rounded h-100 position-relative"
+											class="card bg-body-tertiary border border-0 rounded h-100 shadow position-relative"
 											style="position: relative; overflow: hidden;">
 
 											<!-- Out of Stock Ribbon -->
@@ -128,38 +128,33 @@
 
 
 							<div class="col-md-4">
-    <nav aria-label="Page navigation example">
-        <ul class="pagination justify-content-center">
-            <!-- Previous Button -->
-            <li class="page-item" th:classappend="${isFirst} ? 'disabled' : ''">
-                <a class="page-link" 
-                   th:href="@{'/products?pageNo='+${pageNo-1}}" 
-                   aria-label="Previous">
-                    <span aria-hidden="true">&laquo;</span>
-                </a>
-            </li>
+								<nav aria-label="Page navigation example">
+									<ul class="pagination justify-content-center">
+										<!-- Previous Button -->
+										<li class="page-item"
+											th:classappend="${isFirst} ? 'disabled' : ''"><a
+											class="page-link"
+											th:href="@{'/products?pageNo='+${pageNo-1}}"
+											aria-label="Previous"> <span aria-hidden="true">&laquo;</span>
+										</a></li>
 
-            <!-- Page Numbers -->
-            <li th:each="i : ${#numbers.sequence(1, totalPages)}" 
-                class="page-item" 
-                th:classappend="${pageNo+1 == i} ? 'active' : ''">
-                <a class="page-link" 
-                   th:href="@{'/products?pageNo='+${i-1}}">
-                    [[${i}]]
-                </a>
-            </li>
+										<!-- Page Numbers -->
+										<li th:each="i : ${#numbers.sequence(1, totalPages)}"
+											class="page-item"
+											th:classappend="${pageNo+1 == i} ? 'active' : ''"><a
+											class="page-link" th:href="@{'/products?pageNo='+${i-1}}">
+												[[${i}]] </a></li>
 
-            <!-- Next Button -->
-            <li class="page-item" th:classappend="${isLast} ? 'disabled' : ''">
-                <a class="page-link" 
-                   th:href="@{'/products?pageNo='+${pageNo+1}}" 
-                   aria-label="Next">
-                    <span aria-hidden="true">&raquo;</span>
-                </a>
-            </li>
-        </ul>
-    </nav>
-</div>
+										<!-- Next Button -->
+										<li class="page-item"
+											th:classappend="${isLast} ? 'disabled' : ''"><a
+											class="page-link"
+											th:href="@{'/products?pageNo='+${pageNo+1}}"
+											aria-label="Next"> <span aria-hidden="true">&raquo;</span>
+										</a></li>
+									</ul>
+								</nav>
+							</div>
 
 						</th:block>
 					</div>

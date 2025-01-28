@@ -14,67 +14,112 @@
 
 <body>
 	<section class="container-fluid ">
-		<div class="row align-items-center mb-3 "style="margin-top: 100px;">
+		<div class="row align-items-center mb-3 " style="margin-top: 100px;">
 			<div class="col-12 col-md-6 text-start  mb-md-0">
 				<a href="/admin/" class="btn btn-outline-primary"> <i
 					class="fas fa-arrow-left"></i> Admin Dashboard
 				</a>
 			</div>
 		</div>
+		<th:block th:if="${userType == 1}">
+			<div class="text-center"
+				style="padding: 20px; font-size: 1.8rem; font-weight: 400;">
+				<i class="fa-solid fa-users"></i>&nbsp; Users Management
+			</div>
+		</th:block>
+		<th:block th:if="${userType == 2}">
+			<div class="text-center"
+				style="padding: 20px; font-size: 1.8rem; font-weight: 400;">
+				<i class="fa-solid fa-user-tie"></i>&nbsp; Admin Management
+			</div>
+		</th:block>
+
+		<!-- Success and Error Messages -->
+		<th:block th:if="${session.succMsg}">
+			<p class="text-success fw-bold text-center">[[${session.succMsg}]]</p>
+			<th:block th:text="${@commonServiceImpl.removeSessionMessage()}"></th:block>
+		</th:block>
+		<th:block th:if="${session.errorMsg}">
+			<th:block th:if="${session.errorMsg != 'Incorrect Order Id !!!'}">
+				<p class="text-danger fw-bold text-center">[[${session.errorMsg}]]</p>
+			</th:block>
+			<th:block th:text="${@commonServiceImpl.removeSessionMessage()}"></th:block>
+		</th:block>
+
 		<div class="row justify-content-center">
 			<div class="col-md-12 col-sm-12">
 				<div class="card card-sh">
-					<div class="p-3 text-center  ">
-						<p class="fw-medium fs-4">User Management</p>
 
-						<th:block th:if="${session.succMsg}">
-							<p class="text-success fw-bold">[[${session.succMsg}]]</p>
-							<th:block th:text="${@commonServiceImpl.removeSessionMessage()}"></th:block>
-						</th:block>
-						<th:block th:if="${session.errorMsg}">
-							<p class="text-danger fw-bold">[[${session.errorMsg}]]</p>
-							<th:block th:text="${@commonServiceImpl.removeSessionMessage()}"></th:block>
-
-						</th:block>
-					</div>
 					<div class="card-body">
-						<div class="table-responsive">
-							<table class="table table-hover align-middle">
-								<thead class="table">
+						<div
+							style="overflow-x: auto; width: 100%; padding: 10px; box-sizing: border-box;">
+							<table
+								style="width: 100%; border-collapse: collapse; font-family: Arial, sans-serif; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);">
+								<thead
+									style="background-color: #f8f9fa; text-align: left; border-bottom: 2px solid #e9ecef;">
 									<tr>
-										<th scope="col">ID</th>
-										<th scope="col">Profile</th>
-										<th scope="col">Name</th>
-										<th scope="col">Email</th>
-										<th scope="col">Mobile Number</th>
-										<th scope="col">Address</th>
-										<th scope="col">Account Status</th>
-										<th scope="col">Action</th>
+										<th
+											style="padding: 12px 15px; font-size: 15px; color: #495057; border-right: 1px solid #e9ecef;">ID</th>
+										<th
+											style="padding: 12px 15px; font-size: 15px; color: #495057; border-right: 1px solid #e9ecef;">Profile</th>
+										<th
+											style="padding: 12px 15px; font-size: 15px; color: #495057; border-right: 1px solid #e9ecef;">Name</th>
+										<th
+											style="padding: 12px 15px; font-size: 15px; color: #495057; border-right: 1px solid #e9ecef;">Email</th>
+										<th
+											style="padding: 12px 15px; font-size: 15px; color: #495057; border-right: 1px solid #e9ecef;">Mobile</th>
+										<th
+											style="padding: 12px 15px; font-size: 15px; color: #495057; border-right: 1px solid #e9ecef;">Address</th>
+										<th
+											style="padding: 12px 15px; font-size: 15px; color: #495057; border-right: 1px solid #e9ecef;">Status</th>
+										<th
+											style="padding: 12px 15px; font-size: 15px; color: #495057;">Action</th>
 									</tr>
 								</thead>
 								<tbody>
-									<tr th:each="u,c:${users}">
-										<th scope="row">[[${c.count}]]</th>
-										<td><img th:src="@{'/img/profile_img/' + ${u.profileImage}}"
-											class="rounded-circle" style="width: 50px; height: 50px; object-fit: cover; margin-right: 8px;"
-											alt="Product Image"></td>
-										<td>[[${u.name}]]</td>
-										<td>[[${u.email}]]</td>
-										<td>[[${u.mobileNumber}]]</td>
-										<td>[[${u.address+','+u.city+','+u.state+','+u.pincode}]]</td>
-										<td>[[${u.isEnable}]]</td>
-											<td><a th:href="@{'/admin/updateSts?status=true&id='+${u.id}}"
-											class="btn btn-success btn-sm" title="Edit" aria-label="Edit">
-												Activate
-										</a> <a th:href="@{'/admin/updateSts?status=false&id='+${u.id}}"
-											onclick="return confirm('Are you want to block this account?')"
-											class="btn btn-danger btn-sm" title="Delete"
-											aria-label="Delete"> Deactivate</a></td>
-									</tr>
+									<tr th:each="u, c : ${users}"
+										style="background-color: #ffffff; border-bottom: 1px solid #e9ecef;">
+										<td
+											style="padding: 10px 15px; font-size: 13px; color: #212529; border-right: 1px solid #e9ecef;">[[${c.count}]]</td>
+										<td
+											style="padding: 10px 15px; border-right: 1px solid #e9ecef;">
+											<img th:src="@{'/img/profile_img/' + ${u.profileImage}}"
+											style="width: 40px; height: 40px; border-radius: 50%; object-fit: cover;"
+											alt="Profile Image" />
+										</td>
+										<td
+											style="padding: 10px 15px; font-size: 14px; color: #212529; border-right: 1px solid #e9ecef;">[[${u.name}]]</td>
+										<td
+											style="padding: 10px 15px; font-size: 14px; color: #212529; border-right: 1px solid #e9ecef;">[[${u.email}]]</td>
+										<td
+											style="padding: 10px 15px; font-size: 14px; color: #212529; border-right: 1px solid #e9ecef;">[[${u.mobileNumber}]]</td>
+										<td
+											style="padding: 10px 15px; font-size: 14px; color: #212529; border-right: 1px solid #e9ecef;">[[${u.address
+											+ ', ' + u.city + ', ' + u.state + ', ' + u.pincode}]]</td>
+										<td
+											style="padding: 10px 15px; font-size: 14px; text-align: center; border-right: 1px solid #e9ecef;">
+											<span id="status"
+											style="padding: 5px 10px; border-radius: 4px; font-weight: bold;">
+												[[${u.isEnable} ? 'Activated' : 'Deactivated']] </span>
 
+
+										</td>
+										<td style="font-size: 14px; text-align: center; width: 200px;">
+											<a
+											th:href="@{'/admin/updateSts?status=true&id=' + ${u.id} + '&type=' + ${userType}}"
+											style="padding: 6px 12px; margin-right: 5px; text-decoration: none; color: white; background-color: #28a745; border-radius: 4px;">
+												Activate </a> <a
+											th:href="@{'/admin/updateSts?status=false&id=' + ${u.id} + '&type=' + ${userType}}"
+											onclick="return confirm('Are you sure you want to deactivate this account?')"
+											style="padding: 6px 12px; text-decoration: none; color: white; background-color: #dc3545; border-radius: 4px;">
+												Deactivate </a>
+										</td>
+
+									</tr>
 								</tbody>
 							</table>
 						</div>
+
 					</div>
 				</div>
 			</div>

@@ -8,6 +8,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.security.Principal;
+import java.util.Comparator;
 import java.util.List;
 import java.util.UUID;
 
@@ -35,6 +36,7 @@ import com.ecom.service.ProductService;
 import com.ecom.service.UserService;
 import com.ecom.util.CommonUtil;
 
+import io.micrometer.common.util.StringUtils;
 import jakarta.mail.MessagingException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
@@ -78,7 +80,19 @@ public class HomeController {
 	}
 
 	@GetMapping("/")
-	public String index() {
+	public String index(Model m) {
+
+		List<Category> allActiveCategory = categoryService.getAllActiveCategory().stream()
+				.sorted(Comparator.comparing(Category::getId)) // Sorting categories by id
+				.limit(6).toList();
+
+		List<Product> allActiveProducts = productService.getAllActiveProducts("").stream()
+				.sorted(Comparator.comparing(Product::getId)) // Sorting products by id
+				.limit(8).toList();
+
+		m.addAttribute("category", allActiveCategory);
+		m.addAttribute("products", allActiveProducts);
+
 		return "index";
 	}
 
@@ -96,7 +110,8 @@ public class HomeController {
 	@GetMapping("/products")
 	public String products(Model m, @RequestParam(value = "category", defaultValue = "") String category,
 			@RequestParam(name = "pageNo", defaultValue = "0") Integer pageNo,
-			@RequestParam(name = "pageSize", defaultValue = "4") Integer pageSize) {
+			@RequestParam(name = "pageSize", defaultValue = "4") Integer pageSize,
+			@RequestParam(defaultValue = "") String ch) {
 
 		List<Category> categories = categoryService.getAllActiveCategory();
 		m.addAttribute("paramValue", category);
@@ -104,12 +119,17 @@ public class HomeController {
 
 //		List<Product> products = productService.getAllActiveProducts(category);
 //		m.addAttribute("products", products);
-
-		Page<Product> page = productService.getAllActiveProductPagination(pageNo, pageSize, category);
+		Page<Product> page = null;
+		if (StringUtils.isEmpty(ch)) {
+			page = productService.getAllActiveProductPagination(pageNo, pageSize, category);
+		} else {
+			page = productService.searchActiveProductPagination(pageNo, pageSize, category, ch);
+		}
 
 		List<Product> products = page.getContent();
 		m.addAttribute("products", products);
 		m.addAttribute("productsSize", products.size());
+
 		m.addAttribute("pageNo", page.getNumber());
 		m.addAttribute("pageSize", pageSize);
 		m.addAttribute("totalElements", page.getTotalElements());

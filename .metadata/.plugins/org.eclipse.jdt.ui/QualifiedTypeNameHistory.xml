@@ -47,9 +47,6 @@
     <fullyQualifiedTypeName name="java.util.UUID"/>
     <fullyQualifiedTypeName name="java.util.Date"/>
     <fullyQualifiedTypeName name="com.ecom.model.OrderAddress"/>
-    <fullyQualifiedTypeName name="com.ecom.model.OrderRequest"/>
-    <fullyQualifiedTypeName name="com.ecom.model.ProductOrder"/>
-    <fullyQualifiedTypeName name="com.ecom.service.OrderService"/>
     <fullyQualifiedTypeName name="com.ecom.util.OrderStatus"/>
     <fullyQualifiedTypeName name="com.ecom.repository.ProductOrderRepository"/>
     <fullyQualifiedTypeName name="org.springframework.web.bind.annotation.ModelAttribute"/>
@@ -60,4 +57,7 @@
     <fullyQualifiedTypeName name="ch.qos.logback.core.util.StringUtil"/>
     <fullyQualifiedTypeName name="io.micrometer.common.util.StringUtils"/>
     <fullyQualifiedTypeName name="org.springframework.data.domain.PageRequest"/>
+    <fullyQualifiedTypeName name="com.ecom.model.ProductOrder"/>
+    <fullyQualifiedTypeName name="com.ecom.model.OrderRequest"/>
+    <fullyQualifiedTypeName name="com.ecom.service.OrderService"/>
 </qualifiedTypeNameHistroy>
