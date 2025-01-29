@@ -4,7 +4,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Shopping App</title>
+<title>K-Fashion</title>
 <!-- Add Favicon -->
 <link rel="icon" th:href="@{/img/favicon.ico}" type="image/x-icon">
 <!-- Bootstrap CSS -->
@@ -26,7 +26,8 @@
 </head>
 <body>
 	<!-- Start NavBar -->
-	<nav class="navbar navbar-expand-lg  fixed-top" id="navbar"><!-- bg-light -->
+	<nav class="navbar navbar-expand-lg  fixed-top" id="navbar">
+		<!-- bg-light -->
 		<div class="container-fluid">
 			<!-- Logo -->
 			<a class="navbar-brand" href="/"> <img src="/img/logo.png"
@@ -94,8 +95,7 @@
 									href="/admin/profile"><i class="fa-solid fa-user me-2"></i>
 										Profile</a></li>
 
-								<li ><hr
-										class="dropdown-divider"></li>
+								<li><hr class="dropdown-divider"></li>
 
 								<li th:if="${user != null and user.role != 'ROLE_ADMIN'}">
 									<a class="dropdown-item d-flex align-items-center"
@@ -159,6 +159,12 @@
 		</div>
 	</footer>
 	<!-- End Footer -->
+<!-- Jquery Validation Library -->
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/jquery-validation@1.19.5/dist/jquery.validate.js"></script>
+
+<script type="text/javascript" src="js/script.js"></script>
+<script type="text/javascript" src="../js/script.js"></script>
 
 	<!-- FontAwesome Script -->
 	<script
