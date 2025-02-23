@@ -7,7 +7,9 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.security.Principal;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -235,20 +237,6 @@ public class AdminController {
 			@RequestParam(name = "pageNo", defaultValue = "0") Integer pageNo,
 			@RequestParam(name = "pageSize", defaultValue = "5") Integer pageSize) {
 
-//		List<Product> products = null;
-//		if (ch != null && ch.length() > 0) {
-//			products = productService.searchProduct(ch);
-//			if (products == null || products.isEmpty()) {
-//				session.setAttribute("errorMsg", "Incorrect search !! No products found.");
-//			} else {
-//				session.removeAttribute("errorMsg");
-//			}
-//		} else {
-//			products = productService.getAllProducts();
-//			session.removeAttribute("errorMsg");
-//		}
-//		m.addAttribute("products", products);
-
 		Page<Product> page = null;
 		if (ch != null && ch.length() > 0) {
 			page = productService.searchProductPagination(pageNo, pageSize, ch);
@@ -464,27 +452,33 @@ public class AdminController {
 	public String saveAdmin(@ModelAttribute UserDtls user, @RequestParam("img") MultipartFile file, HttpSession session)
 			throws IOException {
 
-		String imageName = file.isEmpty() ? "default.jpg" : file.getOriginalFilename();
-		user.setProfileImage(imageName);
+		Boolean existsEmail = userService.existsEmail(user.getEmail());
 
-		UserDtls saveUser = userService.saveAdmin(user);
-
-		if (!ObjectUtils.isEmpty(saveUser)) {
-			if (!file.isEmpty()) {
-
-				File saveFile = new ClassPathResource("static/img").getFile();
-
-				Path path = Paths.get(saveFile.getAbsolutePath() + File.separator + "profile_img" + File.separator
-						+ file.getOriginalFilename());
-				// System.out.println(path);
-
-				Files.copy(file.getInputStream(), path, StandardCopyOption.REPLACE_EXISTING);
-			}
-			session.setAttribute("succMsg", "Registration Successfull !");
-
+		if (existsEmail) {
+			session.setAttribute("errorMsg", "Admin Email already exist");
 		} else {
-			session.setAttribute("succMsg", "Something Went Wrong");
 
+			String imageName = file.isEmpty() ? "default.jpg" : file.getOriginalFilename();
+			user.setProfileImage(imageName);
+
+			UserDtls saveUser = userService.saveAdmin(user);
+
+			if (!ObjectUtils.isEmpty(saveUser)) {
+				if (!file.isEmpty()) {
+
+					File saveFile = new ClassPathResource("static/img").getFile();
+
+					Path path = Paths.get(saveFile.getAbsolutePath() + File.separator + "profile_img" + File.separator
+							+ file.getOriginalFilename());
+					// System.out.println(path);
+
+					Files.copy(file.getInputStream(), path, StandardCopyOption.REPLACE_EXISTING);
+				}
+				session.setAttribute("succMsg", "Registration Successfull !");
+
+			} else {
+				session.setAttribute("succMsg", "Something Went Wrong");
+			}
 		}
 
 		return "redirect:/admin/add-admin";
@@ -535,6 +529,51 @@ public class AdminController {
 
 		}
 		return "redirect:/admin/profile";
+	}
+
+	@GetMapping("/product-analytics")
+	public String productAnalytics(Model model) {
+		List<Product> products = productService.getAllProducts();
+		List<ProductOrder> orders = orderService.getAllOrders();
+
+		List<Map<String, Object>> productAnalytics = products.stream().map(product -> {
+			// Calculate total sold units (quantity) for each product
+			long soldCount = orders.stream().filter(order -> order.getProduct().getId() == product.getId())
+					.mapToLong(ProductOrder::getQuantity).sum();
+
+			// Calculate total sales for each product
+			double totalSales = orders.stream().filter(order -> order.getProduct().getId() == product.getId())
+					.mapToDouble(order -> order.getPrice() * order.getQuantity()).sum();
+
+			// Calculate Average Order Value (AOV)
+			double totalOrderValue = orders.stream().filter(order -> order.getProduct().getId() == product.getId())
+					.mapToDouble(order -> order.getPrice() * order.getQuantity()).sum();
+			long totalOrders = orders.stream().filter(order -> order.getProduct().getId() == product.getId()).count();
+			double averageOrderValue = totalOrders > 0 ? totalOrderValue / totalOrders : 0;
+
+			// Calculate the most expensive sale (highest order value for this product)
+			double mostExpensiveSale = orders.stream().filter(order -> order.getProduct().getId() == product.getId())
+					.mapToDouble(order -> order.getPrice() * order.getQuantity()).max().orElse(0);
+
+			// Calculate average quantity per order
+			double averageQuantityPerOrder = totalOrders > 0 ? (double) soldCount / totalOrders : 0;
+
+			// Prepare the analytics data in a map
+			Map<String, Object> analytics = new HashMap<>();
+			analytics.put("productName", product.getTitle());
+			analytics.put("soldCount", soldCount);
+			analytics.put("totalSales", totalSales);
+			analytics.put("averageOrderValue", averageOrderValue);
+			analytics.put("mostExpensiveSale", mostExpensiveSale);
+			analytics.put("averageQuantityPerOrder", averageQuantityPerOrder);
+			analytics.put("totalOrders", totalOrders);
+
+			return analytics;
+		}).collect(Collectors.toList());
+
+		// Add the product analytics data to the model
+		model.addAttribute("productAnalytics", productAnalytics);
+		return "/admin/product_analytics"; // Your view name
 	}
 
 }

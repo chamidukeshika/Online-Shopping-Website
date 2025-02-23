@@ -1,0 +1,18 @@
+@GetMapping("/product-analytics")
+public String productAnalytics(Model m) {
+    List<Product> allproducts = productService.getAllProducts();
+    m.addAttribute("products", allproducts);
+
+    // Prepare data for chart: Example - count of products per category
+    Map<String, Long> categoryCount = allproducts.stream()
+            .collect(Collectors.groupingBy(Product::getCategory, Collectors.counting()));
+
+    // Prepare data for chart: Example - total stock per category
+    Map<String, Integer> categoryStock = allproducts.stream()
+            .collect(Collectors.groupingBy(Product::getCategory, Collectors.summingInt(Product::getStock)));
+
+    m.addAttribute("categoryCount", categoryCount);
+    m.addAttribute("categoryStock", categoryStock);
+
+    return "/admin/product_analytics"; // Your view name
+}

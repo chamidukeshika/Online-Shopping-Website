@@ -82,8 +82,8 @@ body {
 					<th:block th:text="${@commonServiceImpl.removeSessionMessage()}"></th:block>
 				</th:block>
 			</div>
-			
-			
+
+
 			<div class="row justify-content-center">
 				<!-- Responsive form column -->
 				<div class="col-md-10 col-12">
@@ -91,7 +91,7 @@ body {
 						style="border-radius: 20px; overflow: hidden; border: none; background-color: rgba(255, 255, 255, 0.8);">
 						<div class="card-body" style="padding: 50px;">
 							<form action="/admin/save-admin" enctype="multipart/form-data"
-								method="POST">
+								id="addAdmin" method="POST">
 
 
 								<div class="row">
@@ -101,19 +101,16 @@ body {
 
 										<label class="form-label fw-medium"><i
 											class="fas fa-user"></i> Full Name</label> <input
-											class="form-control" name="name" type="text" required
+											class="form-control" name="name" type="text"
 											placeholder="John Wick">
 									</div>
 
 									<!-- Mobile Number -->
 									<div class="col-md-6 mb-3">
 										<label class="form-label fw-medium"><i
-											class="fas fa-phone"></i> Mobile Number</label>
-										<div class="input-group has-validation">
-											<span class="input-group-text">(+94)</span> <input
-												class="form-control" name="mobileNumber" type="number"
-												required placeholder="71 234 567">
-										</div>
+											class="fas fa-phone"></i>Mobile Number</label> <input
+											class="form-control" name="mobileNumber" type="text"
+											placeholder="071 123 1234">
 									</div>
 
 
@@ -123,7 +120,7 @@ body {
 									<div class="col-md-6 mb-3">
 										<label class="form-label fw-medium"><i
 											class="fas fa-envelope"></i> Email</label> <input
-											class="form-control" name="email" type="email" required
+											class="form-control" name="email" type="email"
 											placeholder="john@email.com">
 									</div>
 
@@ -131,7 +128,7 @@ body {
 									<div class="col-md-6 mb-3">
 										<label class="form-label fw-medium"><i
 											class="fas fa-image"></i> Profile Image</label> <input
-											class="form-control" name="img" type="file" required>
+											class="form-control" name="img" type="file">
 									</div>
 								</div>
 								<div class="row">
@@ -139,7 +136,7 @@ body {
 									<div class="col-md-6 mb-3">
 										<label class="form-label fw-medium"><i
 											class="fas fa-map-marker-alt"></i> Address</label> <input
-											class="form-control" name="address" type="text" required
+											class="form-control" name="address" type="text"
 											placeholder="Address">
 									</div>
 
@@ -147,7 +144,7 @@ body {
 									<div class="col-md-2 mb-3">
 										<label class="form-label fw-medium"><i
 											class="fas fa-city"></i> City</label> <input class="form-control"
-											name="city" type="text" required placeholder="City">
+											name="city" type="text" placeholder="City">
 									</div>
 
 
@@ -155,7 +152,7 @@ body {
 									<div class="col-md-2 mb-3">
 										<label class="form-label fw-medium"><i
 											class="fas fa-globe"></i> Province</label> <select
-											class="form-select" name="state" required>
+											class="form-select" name="state">
 											<option value="" disabled selected>Select a province</option>
 											<option value="Western">Western</option>
 											<option value="Central">Central</option>
@@ -173,7 +170,7 @@ body {
 									<div class="col-md-2 mb-3">
 										<label class="form-label fw-medium"><i
 											class="fas fa-mail-bulk"></i> Postal Code</label> <input
-											class="form-control" name="pincode" type="number" required
+											class="form-control" name="pincode" type="number"
 											placeholder="12345">
 									</div>
 								</div>
@@ -183,15 +180,14 @@ body {
 									<div class="col-md-6 mb-3">
 										<label class="form-label fw-medium"><i
 											class="fas fa-lock"></i> Password</label> <input class="form-control"
-											name="password" type="password" required>
+											name="password" type="password">
 									</div>
 
 									<!-- Confirm Password -->
 									<div class="col-md-6 mb-3">
 										<label class="form-label fw-medium"><i
 											class="fas fa-lock"></i> Confirm Password</label> <input
-											class="form-control" name="cpassword" type="password"
-											required>
+											class="form-control" name="confirmpassword" type="password">
 									</div>
 								</div>
 
@@ -199,12 +195,13 @@ body {
 
 								<!-- Terms and Conditions -->
 								<div class="form-check mb-3">
-									<input type="checkbox" class="form-check-input"
-										id="validationFormCheck1" required> <label
+									 <label
 										class="form-check-label" for="validationFormCheck1">
 										Agree to our <a href="#">Terms and Conditions</a> and <a
 										href="#">Privacy Policy</a>.
 									</label>
+									<input type="checkbox" class="form-check-input"
+										id="validationFormCheck1" name="check">
 								</div>
 
 								<!-- Submit Button -->

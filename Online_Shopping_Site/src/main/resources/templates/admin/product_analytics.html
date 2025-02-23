@@ -1,0 +1,434 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+	th:replace="~{base::Layout(~{::section})}">
+
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Product Analytics</title>
+<link rel="stylesheet"
+	href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css">
+<link rel="stylesheet"
+	href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+</head>
+
+<body>
+	<section class="container-fluid">
+		<div class="row align-items-center ms-2" style="margin-top: 100px;">
+			<div class="col-12 col-md-6 text-start mb-md-0">
+				<a href="/admin/" class="btn btn-outline-primary"> <i
+					class="fas fa-arrow-left"></i> Admin Dashboard
+				</a>
+			</div>
+		</div>
+
+
+
+		<div class="text-center mb-5">
+			<div class="text-center"
+				style="padding: 20px; font-size: 1.8rem; font-weight: 400;">
+				<i class="fa-solid fa-layer-group"></i>&nbsp; Product Analytics<br />
+				<button id="downloadPdf" class="btn btn-danger ">
+					<i class="fas fa-file-pdf"></i> Report
+				</button>
+
+
+			</div>
+
+
+		</div>
+
+
+
+		<!-- Mini Charts Section -->
+		<div class="row mb-4 g-3" style="padding: 0 15px;">
+			<div class="col-12 col-md-6 col-lg-4">
+				<div class="card shadow-sm h-100">
+					<div class="card-body d-flex flex-column">
+						<h6 class="card-title text-secondary mb-3">Top Selling
+							Products</h6>
+						<div class="chart-container"
+							style="position: relative; height: 220px; width: 100%;">
+							<canvas id="topProductsChart"></canvas>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="col-12 col-md-6 col-lg-4">
+				<div class="card shadow-sm h-100">
+					<div class="card-body d-flex flex-column">
+						<h6 class="card-title text-secondary mb-3">Sales Distribution</h6>
+						<div class="chart-container"
+							style="position: relative; height: 220px; width: 100%;">
+							<canvas id="salesDistributionChart"></canvas>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="col-12 col-md-6 col-lg-4">
+				<div class="card shadow-sm h-100">
+					<div class="card-body d-flex flex-column">
+						<h6 class="card-title text-secondary mb-3">Order Value
+							Analysis</h6>
+						<div class="chart-container"
+							style="position: relative; height: 220px; width: 100%;">
+							<canvas id="orderValueChart"></canvas>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<!-- Product Analytics Table -->
+		<div class="row justify-content-center" style="padding: 0 15px;">
+			<div class="col-12">
+				<div class="card shadow-lg"
+					style="border-radius: 15px; border: none;">
+					<div class="card-body" style="padding: 2rem;">
+						<div class="table-responsive">
+							<table class="table table-hover"
+								style="border-collapse: separate; border-spacing: 0; min-width: 1000px;"
+								id="analyticsTable">
+								<thead
+									style="background: linear-gradient(135deg, #2c3e50, #34495e); color: white;">
+									<tr>
+										<th
+											style="padding: 1.2rem; border-top-left-radius: 15px; text-align: left; width: 20%;">Product
+											Name</th>
+										<th style="padding: 1.2rem; text-align: center; width: 12%;">Units
+											Sold</th>
+										<th style="padding: 1.2rem; text-align: right; width: 15%;">Total
+											Sales</th>
+										<th style="padding: 1.2rem; text-align: right; width: 15%;">Avg
+											Order Value</th>
+										<th style="padding: 1.2rem; text-align: right; width: 12%;">Max
+											Sale</th>
+										<th style="padding: 1.2rem; text-align: center; width: 12%;">Avg
+											Quantity</th>
+										<th
+											style="padding: 1.2rem; border-top-right-radius: 15px; text-align: center; width: 12%;">Total
+											Orders</th>
+									</tr>
+								</thead>
+								<tbody>
+									<tr th:each="analytics : ${productAnalytics}"
+										style="transition: all 0.2s ease; cursor: pointer; vertical-align: middle;"
+										onmouseover="this.style.backgroundColor='#f8f9fa'"
+										onmouseout="this.style.backgroundColor='white'">
+										<td
+											style="padding: 1rem; font-weight: 500; color: #2c3e50; text-align: left;"
+											th:text="${analytics.productName}"></td>
+										<td
+											style="padding: 1rem; text-align: center; vertical-align: middle;"
+											th:text="${analytics.soldCount}"></td>
+										<td
+											style="padding: 1rem; text-align: right; color: #27ae60; font-weight: 500; vertical-align: middle;"
+											th:text="'$' + ${#numbers.formatDecimal(analytics.totalSales, 1, 'POINT', 2, 'COMMA')}"></td>
+										<td
+											style="padding: 1rem; text-align: right; vertical-align: middle;"
+											th:text="'$' + ${#numbers.formatDecimal(analytics.averageOrderValue, 1, 'POINT', 2, 'COMMA')}"></td>
+										<td
+											style="padding: 1rem; text-align: right; color: #e74c3c; font-weight: 500; vertical-align: middle;"
+											th:text="'$' + ${#numbers.formatDecimal(analytics.mostExpensiveSale, 1, 'POINT', 2, 'COMMA')}"></td>
+										<td
+											style="padding: 1rem; text-align: center; vertical-align: middle;"
+											th:text="${#numbers.formatDecimal(analytics.averageQuantityPerOrder, 1, 'POINT', 2, 'COMMA')}"></td>
+										<td
+											style="padding: 1rem; text-align: center; font-weight: 500; vertical-align: middle;"
+											th:text="${analytics.totalOrders}"></td>
+									</tr>
+								</tbody>
+							</table>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<script th:inline="javascript">
+			document.addEventListener('DOMContentLoaded', function() {
+				const productData = /*[[${productAnalytics}]]*/ [];
+				
+				// Process data
+				const labels = productData.map(p => p.productName);
+				const salesData = productData.map(p => p.totalSales);
+				const unitsData = productData.map(p => p.soldCount);
+				const aovData = productData.map(p => p.averageOrderValue);
+
+				// Chart colors
+				const chartColors = [
+					'#2ecc71', '#3498db', '#9b59b6', '#f1c40f', '#e67e22',
+					'#1abc9c', '#e74c3c', '#95a5a6', '#d35400', '#2c3e50'
+				];
+
+				// Top Products Chart
+				new Chart(document.getElementById('topProductsChart'), {
+					type: 'bar',
+					data: {
+						labels: labels.slice(0, 5),
+						datasets: [{
+							label: 'Units Sold',
+							data: unitsData.slice(0, 5),
+							backgroundColor: chartColors.slice(0, 5),
+							borderRadius: 5,
+							borderWidth: 0
+						}]
+					},
+					options: {
+						responsive: true,
+						maintainAspectRatio: false,
+						indexAxis: 'y',
+						plugins: {
+							legend: { display: false },
+							tooltip: {
+								enabled: true,
+								callbacks: {
+									label: function(context) {
+										return ` ${context.dataset.label}: ${context.parsed.x}`;
+									}
+								}
+							}
+						},
+						scales: {
+							x: {
+								beginAtZero: true,
+								ticks: { 
+									precision: 0,
+									color: '#95a5a6'
+								},
+								grid: { color: '#ecf0f1' }
+							},
+							y: {
+								ticks: { 
+									color: '#95a5a6',
+									autoSkip: false
+								},
+								grid: { display: false }
+							}
+						}
+					}
+				});
+
+				// Sales Distribution Chart
+				new Chart(document.getElementById('salesDistributionChart'), {
+					type: 'doughnut',
+					data: {
+						labels: labels,
+						datasets: [{
+							data: salesData,
+							backgroundColor: chartColors,
+							borderWidth: 0,
+							hoverOffset: 10
+						}]
+					},
+					options: {
+						responsive: true,
+						maintainAspectRatio: false,
+						plugins: {
+							legend: { 
+								display: false 
+							},
+							tooltip: {
+								callbacks: {
+									label: function(context) {
+										const total = context.dataset.data.reduce((a, b) => a + b, 0);
+										const value = context.parsed;
+										const percentage = ((value / total) * 100).toFixed(1);
+										return ` ${context.label}: $${value.toFixed(2)} (${percentage}%)`;
+									}
+								}
+							}
+						},
+						cutout: '65%'
+					}
+				});
+
+				// Order Value Chart
+				new Chart(document.getElementById('orderValueChart'), {
+					type: 'line',
+					data: {
+						labels: labels,
+						datasets: [{
+							label: 'Avg Order Value',
+							data: aovData,
+							borderColor: '#e74c3c',
+							backgroundColor: 'rgba(231, 76, 60, 0.1)',
+							tension: 0.3,
+							borderWidth: 2,
+							pointRadius: 3,
+							pointHoverRadius: 5
+						}]
+					},
+					options: {
+						responsive: true,
+						maintainAspectRatio: false,
+						plugins: {
+							legend: { display: false },
+							tooltip: {
+								callbacks: {
+									label: function(context) {
+										return ` $${context.parsed.y.toFixed(2)}`;
+									}
+								}
+							}
+						},
+						scales: {
+							y: {
+								beginAtZero: true,
+								ticks: {
+									color: '#95a5a6',
+									callback: function(value) {
+										return `$${value.toFixed(0)}`;
+									}
+								},
+								grid: { color: '#ecf0f1' }
+							},
+							x: {
+								ticks: {
+									color: '#95a5a6',
+									maxRotation: 45,
+									minRotation: 45
+								},
+								grid: { display: false }
+							}
+						}
+					}
+				});
+			});
+		</script>
+		<script
+			src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+		<script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
+		<script th:inline="javascript">
+    document.addEventListener('DOMContentLoaded', function () {
+        const { jsPDF } = window.jspdf;
+
+        // Fetch productAnalytics data from the server
+        const productAnalytics = /*[[${productAnalytics}]]*/ [];
+
+        document.getElementById('downloadPdf').addEventListener('click', async () => {
+            try {
+                const pdf = new jsPDF('p', 'mm', 'a4');
+                const margin = 10;
+                const pageWidth = 210; 
+                const pageHeight = 297;
+                const contentWidth = pageWidth - margin * 2;
+                let yPos = margin + 10;
+
+                // Page Border
+                pdf.setDrawColor(0, 0, 0);
+                pdf.rect(5, 5, pageWidth - 10, pageHeight - 10);
+
+                // Add Company Logo and Title
+                const logo = await fetch('/img/logo.png').then((r) => r.blob());
+                const logoUrl = URL.createObjectURL(logo);
+                pdf.addImage(logoUrl, 'PNG', margin, margin, 30, 15);
+
+                pdf.setFont('helvetica', 'bold'); 
+                pdf.setFontSize(20);
+                pdf.setTextColor(0, 102, 204); 
+                pdf.text('Product Analytics Report', pageWidth / 2, margin + 10, { align: 'center' });
+
+                yPos += 25;
+
+                // Add Summary Section
+                pdf.setFontSize(12);
+                pdf.setTextColor(0);
+                pdf.setFont('helvetica', 'bold');
+                pdf.text('Summary of Data Analysis', margin+65, yPos);
+                yPos += 20;
+
+                let totalSales = 0;
+                let totalUnitsSold = 0;
+                let totalOrders = 0;
+                productAnalytics.forEach((product) => {
+                    totalSales += product.totalSales;
+                    totalUnitsSold += product.soldCount;
+                    totalOrders += product.totalOrders;
+                });
+
+                pdf.setFont('helvetica', 'normal');
+                pdf.text(`Total Sales         : Rs.${totalSales.toLocaleString('en-US', { maximumFractionDigits: 2 })}`, margin, yPos);
+                pdf.text(`Total Units Sold  : ${totalUnitsSold} Units`, margin, yPos + 10);
+                pdf.text(`Total Orders       : ${totalOrders} Orders`, margin, yPos + 20);
+                yPos += 40;
+
+                // Add Table Header
+                const headers = [
+    { name: 'Product Name', width: 60 },    
+    { name: 'Units', width: 20 },
+    { name: 'Total Sales', width: 40 },
+    { name: 'Max Sale', width: 40 },     
+    { name: 'No.Orders', width: 25 }, 
+];
+                pdf.setFillColor(0, 102, 204);
+                pdf.rect(margin, yPos - 5, contentWidth, 10, 'F'); 
+
+                let colX = margin;
+                headers.forEach((header) => {
+                	 pdf.setTextColor(255);
+                    pdf.text(header.name, colX + 3, yPos);
+                    colX += header.width;
+                });
+
+                yPos += 8;
+
+                // Add Product Data with Alternating Row Colors
+                pdf.setFont('helvetica', 'normal');
+                pdf.setTextColor(0); 
+                productAnalytics.forEach((product, index) => {
+                    pdf.setFillColor(index % 2 === 0 ? 240 : 255); 
+                    pdf.rect(margin, yPos - 5, contentWidth, 10, 'F');
+
+                    let colX = margin;
+                    const values = [
+                        product.productName,
+                        product.soldCount,
+                        `Rs.${product.totalSales.toFixed(2)}`,
+                        `Rs.${product.mostExpensiveSale.toFixed(2)}`,
+                        product.totalOrders,
+                    ];
+
+                    values.forEach((value, idx) => {
+                        pdf.text(value.toString(), colX + 3, yPos);
+                        colX += headers[idx].width;
+                    });
+
+                    yPos += 8;
+
+                    if (yPos > pageHeight - 30) {
+                        pdf.addPage();
+                        yPos = margin + 10;
+                    }
+                });
+
+                // Add Footer with Date, Time, and Page Number
+                const now = new Date();
+                const formattedDate = `${now.toLocaleDateString()} ${now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}`;
+                pdf.setFont('helvetica', 'italic');
+                pdf.setFontSize(10);
+                pdf.setTextColor(150); 
+                pdf.text(
+                    `Generated by K-Fashion | ${formattedDate}`,
+                    pageWidth / 2,
+                    pageHeight - 10,
+                    { align: 'center' }
+                );
+
+                // Save PDF
+                pdf.save('Products_Sales_Report.pdf');
+            } catch (error) {
+                console.error('Error generating PDF:', error);
+            }
+        });
+    });
+</script>
+
+
+
+
+
+
+	</section>
+</body>
+</html>
